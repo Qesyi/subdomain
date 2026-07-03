@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Arina 💌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF6EF;
+    --blush:#FFD9E2;
+    --pink:#FF6F91;
+    --deep:#FF3E6C;
+    --plum:#4A2942;
+    --gold:#FFC93C;
+    --shadow: 0 20px 45px rgba(255,62,108,0.18);
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ height:100%; }
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 15% 20%, var(--blush) 0%, transparent 45%),
+      radial-gradient(circle at 85% 80%, var(--blush) 0%, transparent 45%),
+      var(--cream);
+    font-family:'Quicksand', sans-serif;
+    color:var(--plum);
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  #heart-field{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    overflow:hidden;
+  }
+  .bg-heart{
+    position:absolute;
+    bottom:-10%;
+    font-size:1.4rem;
+    opacity:0.55;
+    animation: float-up linear infinite;
+    filter: drop-shadow(0 2px 4px rgba(255,62,108,0.15));
+  }
+  @keyframes float-up{
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%  { opacity:0.6; }
+    90%  { opacity:0.5; }
+    100% { transform: translateY(-110vh) translateX(var(--drift,20px)) rotate(360deg); opacity:0; }
+  }
+
+  .stage-wrap{
+    position:relative;
+    z-index:2;
+    width:min(92vw, 480px);
+  }
+
+  .card{
+    background:#fff;
+    border-radius:28px;
+    padding:40px 32px;
+    box-shadow: var(--shadow);
+    text-align:center;
+    position:relative;
+    display:none;
+    animation: card-in 0.5s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .card.active{ display:block; }
+
+  @keyframes card-in{
+    from{ opacity:0; transform: translateY(24px) scale(0.96); }
+    to{ opacity:1; transform: translateY(0) scale(1); }
+  }
+
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--pink);
+    font-weight:700;
+    margin-bottom:10px;
+  }
+
+  h1,h2{
+    font-family:'Baloo 2', sans-serif;
+    margin:0 0 14px;
+    line-height:1.2;
+  }
+  h1{ font-size:1.7rem; color:var(--plum); }
+  h2{ font-size:1.4rem; color:var(--plum); }
+
+  p{ font-size:1rem; line-height:1.55; margin:0 0 22px; color:#6b5464; }
+
+  .progress{
+    display:flex; justify-content:center; gap:8px; margin-bottom:26px;
+  }
+  .dot{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--blush);
+    transition: all .3s ease;
+  }
+  .dot.done{ background:var(--pink); }
+  .dot.now{ background:var(--deep); width:22px; border-radius:6px; }
+
+  .choices{
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .choice-btn{
+    font-family:'Quicksand', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    padding:16px 18px;
+    border-radius:16px;
+    border:2px solid var(--blush);
+    background:var(--cream);
+    color:var(--plum);
+    cursor:pointer;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .choice-btn:hover{
+    transform: translateY(-2px) scale(1.02);
+    background:var(--blush);
+    border-color:var(--pink);
+  }
+  .choice-btn:active{ transform: scale(0.98); }
+  .choice-btn:disabled{ cursor:default; opacity:0.7; }
+  .choice-btn:disabled:hover{ transform:none; }
+
+  .reaction{
+    margin-top:18px;
+    font-weight:600;
+    color:var(--deep);
+    font-size:0.95rem;
+    min-height:1.2em;
+  }
+
+  .primary-btn{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1.05rem;
+    padding:14px 34px;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(135deg, var(--pink), var(--deep));
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 10px 24px rgba(255,62,108,0.35);
+    transition: transform .15s ease;
+  }
+  .primary-btn:hover{ transform: translateY(-2px) scale(1.03); }
+  .primary-btn:active{ transform: scale(0.97); }
+
+  .typed-lines{
+    min-height:120px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:8px;
+  }
+  .typed-line{
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--plum);
+    opacity:0;
+  }
+  .typed-line.shown{ opacity:1; }
+  .cursor{
+    display:inline-block;
+    width:2px;
+    background:var(--deep);
+    margin-left:2px;
+    animation: blink 0.9s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .final-heart{
+    font-size:3rem;
+    margin-bottom:6px;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.15); }
+  }
+
+  .final-question{
+    font-family:'Baloo 2', sans-serif;
+    font-size:1.6rem;
+    color:var(--deep);
+    margin:8px 0 26px;
+  }
+
+  .yn-wrap{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:18px;
+    min-height:64px;
+  }
+  .yes-btn{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:1.1rem;
+    padding:14px 30px;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(135deg, var(--pink), var(--deep));
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 10px 24px rgba(255,62,108,0.35);
+    transition: transform .15s ease, font-size .2s ease, padding .2s ease;
+  }
+  .yes-btn:hover{ transform: translateY(-2px) scale(1.05); }
+
+  .no-btn{
+    font-family:'Quicksand', sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    padding:14px 26px;
+    border:2px solid var(--blush);
+    border-radius:999px;
+    background:#fff;
+    color:var(--plum);
+    cursor:pointer;
+    transition: top .28s cubic-bezier(.2,.9,.3,1.3), left .28s cubic-bezier(.2,.9,.3,1.3);
+    z-index:10;
+  }
+  .no-btn.roaming{
+    position:fixed;
+  }
+
+  .nudge{
+    margin-top:16px;
+    font-size:0.9rem;
+    color:#a5798c;
+    min-height:1.2em;
+  }
+
+  .yay-heart{ font-size:3.4rem; animation: pop 0.5s ease; }
+  @keyframes pop{
+    0%{ transform:scale(0); }
+    70%{ transform:scale(1.2); }
+    100%{ transform:scale(1); }
+  }
+
+  #confetti-layer{
+    position:fixed; inset:0; pointer-events:none; z-index:5; overflow:hidden;
+  }
+  .confetti-piece{
+    position:absolute;
+    top:-5%;
+    font-size:1.3rem;
+    animation: confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall{
+    0%{ transform: translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform: translateY(110vh) rotate(600deg); opacity:0.9; }
+  }
+
+  @media (max-width: 420px){
+    .card{ padding:32px 22px; }
+    h1{ font-size:1.4rem; }
+    .final-question{ font-size:1.3rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .bg-heart, .final-heart, .yay-heart, .confetti-piece{ animation: none !important; }
+    .card{ animation: none !important; }
+  }
+
+  #gate-overlay{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(74,41,66,0.55);
+    backdrop-filter: blur(6px);
+    padding:20px;
+  }
+  .gate-card{
+    background:#fff;
+    border-radius:28px;
+    padding:40px 32px;
+    max-width:380px;
+    width:100%;
+    text-align:center;
+    box-shadow: var(--shadow);
+    animation: card-in 0.4s cubic-bezier(.2,.9,.3,1.3);
+  }
+  .gate-heart{
+    font-size:2.4rem;
+    margin-bottom:10px;
+  }
+  .gate-text{
+    text-align:center;
+    font-size:0.98rem;
+    line-height:1.6;
+    color:#6b5464;
+    margin:0 0 16px;
+  }
+  .gate-text strong{ color:var(--deep); }
+  #gate-ok-btn{ margin-top:6px; }
+</style>
+</head>
+<body>
+
+<div id="gate-overlay">
+  <div class="gate-card">
+    <div class="gate-heart">💌</div>
+    <p class="gate-text">This website was made by<br><strong>Ameer Aqasyah</strong>, for <br><strong>Sosova Arina Vadimovna</strong>.</p>
+    <p class="gate-text">If you're not Arina... this isn't for you.<br>SO FUCK OFF!</p>
+    <button class="primary-btn" id="gate-ok-btn">okay, got it</button>
+  </div>
+</div>
+
+<div id="heart-field"></div>
+<div id="confetti-layer"></div>
+
+<div class="stage-wrap">
+
+  <section class="card active" data-stage="0">
+    <div class="eyebrow">A QUICK CHECK FIRST</div>
+    <h1>Are you an impostor or really Arina 👮</h1>
+    <p>one wrong answer and this website will destroy itself</p>
+    <button class="primary-btn" id="start-btn">let's go</button>
+  </section>
+
+  <section class="card" data-stage="1">
+    <div class="progress">
+      <div class="dot now"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    <div class="eyebrow">question 1 of 3</div>
+    <h2>What is Qash's secret identity?</h2>
+    <div class="choices">
+      <button class="choice-btn" data-reaction="I TOLD YOU NOT TO TELL ANYONE AREN'T I?">He is Spiderman 🐞</button>
+      <button class="choice-btn" data-reaction="Awwh what a good girl you are 😊💏">Its a secret i can't tell anyone 😜</button>
+    </div>
+    <div class="reaction"></div>
+  </section>
+
+  <section class="card" data-stage="2">
+    <div class="progress">
+      <div class="dot done"></div><div class="dot now"></div><div class="dot"></div>
+    </div>
+    <div class="eyebrow">question 2 of 3</div>
+    <h2>Who is the singer of the song Матушка?</h2>
+    <div class="choices">
+      <button class="choice-btn" data-reaction="Awwh you remember our first outing 😊💏">I know that song but i forgot her name 😀</button>
+      <button class="choice-btn" data-reaction="MATUSHKA ZEMLYAAAAAA БЕЛАЯ БЕРЁЗОНЬКА!!!!">Easy her name is Tatyana Kurtukova 🧕</button>
+    </div>
+    <div class="reaction"></div>
+  </section>
+
+  <section class="card" data-stage="3">
+    <div class="progress">
+      <div class="dot done"></div><div class="dot done"></div><div class="dot now"></div>
+    </div>
+    <div class="eyebrow">question 3 of 3</div>
+    <h2>What is Qash's favourite food?</h2>
+    <div class="choices">
+      <button class="choice-btn" data-reaction="I dont know why but i feel like you will choose this and i'm right">Obviously сырники 😎</button>
+      <button class="choice-btn" data-reaction="So what's yor favourite food then?">I dont know we never talk about our favourite foods yet 🌭</button>
+    </div>
+    <div class="reaction"></div>
+  </section>
+
+  <section class="card" data-stage="4">
+    <div class="eyebrow">okay, game over</div>
+    <h1>Well there's not really a wrong answer here<br>I just want to see your reaction😊</h1>
+    <p>here is the main point of this website. ready?</p>
+    <button class="primary-btn" id="reveal-btn">yeah, go ahead</button>
+  </section>
+
+  <section class="card" data-stage="5">
+    <div class="typed-lines" id="typed-lines"></div>
+  </section>
+
+  <section class="card" data-stage="6">
+    <div class="final-heart">💗</div>
+    <div class="final-question">will u be my yeoja chingu?</div>
+    <div class="yn-wrap" id="yn-wrap">
+      <button class="yes-btn" id="yes-btn">yes 💗</button>
+      <button class="no-btn" id="no-btn">no</button>
+    </div>
+    <div class="nudge" id="nudge"></div>
+  </section>
+
+  <section class="card" data-stage="7">
+    <div class="yay-heart">🎉💗</div>
+    <h1>yeyyy!! no turning back now haha</h1>
+    <p>you are now my girlfriend, you clicked yes yourself and i didn't force you 💌</p>
+  </section>
+
+</div>
+
+<script>
+document.getElementById('gate-ok-btn').addEventListener('click', () => {
+  document.getElementById('gate-overlay').style.display = 'none';
+});
+
+/* ============================================================
+   TIMING — how long to pause so she can actually read things
+   ============================================================ */
+const ANSWER_READ_DELAY = 2600;   // pause after picking a quiz answer, before moving on
+const TYPED_LINE_PAUSE  = 1400;   // pause between each typed confession line
+const FINAL_LINE_PAUSE  = 2600;   // extra pause after the LAST line before the ask appears
+
+const CONFESSION_LINES = [
+  "so... I know we only know each other for not that long.",
+  "I don't know why but its so easy to talk to you",
+  "every time we talk, my day gets better.",
+  "I catch myself smiling at my phone because of you.",
+  "I don't really do that, that shi gay as hell",
+  "The way you carry yourself and your personality, it makes me feel something i haven't felt for so long.",
+  "You asked me what im looking for...",
+  "im looking for someone like you.",
+  "Someone that makes me feel like i can finally be myself",
+  "I like you Arina. like, actually like you.",
+  "I can't continue just being 'friends' with you.",
+  "so here it goes..."
+];
+
+(function heartField(){
+  const field = document.getElementById('heart-field');
+  const emojis = ['💗','💕','✨','💖'];
+  function spawn(){
+    const el = document.createElement('div');
+    el.className = 'bg-heart';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    const left = Math.random()*100;
+    const duration = 9 + Math.random()*8;
+    const drift = (Math.random()*80 - 40) + 'px';
+    el.style.left = left + 'vw';
+    el.style.setProperty('--drift', drift);
+    el.style.animationDuration = duration + 's';
+    el.style.fontSize = (1 + Math.random()*1.2) + 'rem';
+    field.appendChild(el);
+    setTimeout(()=> el.remove(), duration*1000 + 500);
+  }
+  for(let i=0;i<6;i++) setTimeout(spawn, i*600);
+  setInterval(spawn, 1400);
+})();
+
+const stages = Array.from(document.querySelectorAll('.card'));
+function goToStage(n){
+  stages.forEach(s => s.classList.toggle('active', s.dataset.stage === String(n)));
+}
+
+document.getElementById('start-btn').addEventListener('click', ()=> goToStage(1));
+
+[1,2,3].forEach(stageNum => {
+  const section = document.querySelector(`.card[data-stage="${stageNum}"]`);
+  const buttons = section.querySelectorAll('.choice-btn');
+  const reactionEl = section.querySelector('.reaction');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      reactionEl.textContent = btn.dataset.reaction;
+      buttons.forEach(b => b.disabled = true);
+      setTimeout(() => {
+        const next = stageNum === 3 ? 4 : stageNum + 1;
+        goToStage(next);
+      }, ANSWER_READ_DELAY);
+    });
+  });
+});
+
+document.getElementById('reveal-btn').addEventListener('click', () => {
+  goToStage(5);
+  typeConfession();
+});
+
+function typeConfession(){
+  const wrap = document.getElementById('typed-lines');
+  wrap.innerHTML = '';
+  let lineIndex = 0;
+
+  function typeLine(){
+    if(lineIndex >= CONFESSION_LINES.length){
+      setTimeout(()=> goToStage(6), FINAL_LINE_PAUSE);
+      return;
+    }
+    const lineEl = document.createElement('div');
+    lineEl.className = 'typed-line';
+    wrap.appendChild(lineEl);
+    wrap.querySelectorAll('.cursor').forEach(c => c.remove());
+
+    const text = CONFESSION_LINES[lineIndex];
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
+    let charIndex = 0;
+    lineEl.classList.add('shown');
+    lineEl.appendChild(document.createTextNode(''));
+    lineEl.appendChild(cursor);
+
+    const typer = setInterval(() => {
+      if(charIndex < text.length){
+        cursor.insertAdjacentText('beforebegin', text[charIndex]);
+        charIndex++;
+      } else {
+        clearInterval(typer);
+        cursor.remove();
+        lineIndex++;
+        const isLast = lineIndex >= CONFESSION_LINES.length;
+        setTimeout(typeLine, isLast ? FINAL_LINE_PAUSE : TYPED_LINE_PAUSE);
+      }
+    }, 32);
+  }
+  typeLine();
+}
+
+const ynWrap = document.getElementById('yn-wrap');
+const noBtn = document.getElementById('no-btn');
+const yesBtn = document.getElementById('yes-btn');
+const nudge = document.getElementById('nudge');
+
+const nudgeMessages = [
+    "why is the NO button is over there?",
+  "hey, that button is shy 🙈",
+  "try again? 🥺",
+  "it really doesn't want to be clicked",
+  "come on, you know the answer 😄",
+  "yes is right there though ☝"
+];
+let dodgeCount = 0;
+
+function dodgeNo(){
+  const btnRect = noBtn.getBoundingClientRect();
+  const margin = 16;
+  const maxX = window.innerWidth - btnRect.width - margin*2;
+  const maxY = window.innerHeight - btnRect.height - margin*2;
+  const x = margin + Math.random()*maxX;
+  const y = margin + Math.random()*maxY;
+
+  noBtn.classList.add('roaming');
+  noBtn.style.left = x + 'px';
+  noBtn.style.top = y + 'px';
+
+  dodgeCount++;
+  nudge.textContent = nudgeMessages[Math.min(dodgeCount-1, nudgeMessages.length-1)];
+
+  const scale = Math.min(1 + dodgeCount*0.08, 1.6);
+  yesBtn.style.fontSize = (1.1*scale) + 'rem';
+  yesBtn.style.padding = `${14*scale}px ${30*scale}px`;
+}
+
+noBtn.addEventListener('mouseenter', dodgeNo);
+noBtn.addEventListener('click', (e) => { e.preventDefault(); dodgeNo(); });
+noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); dodgeNo(); }, {passive:false});
+
+yesBtn.addEventListener('click', () => {
+  goToStage(7);
+  burstConfetti();
+});
+
+function burstConfetti(){
+  const layer = document.getElementById('confetti-layer');
+  const pieces = ['💗','🎉','✨','💕','🎊','💖'];
+  for(let i=0;i<40;i++){
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.textContent = pieces[Math.floor(Math.random()*pieces.length)];
+      el.style.left = Math.random()*100 + 'vw';
+      el.style.fontSize = (1 + Math.random()*1.4) + 'rem';
+      const duration = 2.5 + Math.random()*2;
+      el.style.animationDuration = duration + 's';
+      layer.appendChild(el);
+      setTimeout(()=> el.remove(), duration*1000 + 300);
+    }, i*40);
+  }
+}
+</script>
+
+</body>
+</html>
