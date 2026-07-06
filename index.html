@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For Arina 💌</title>
+<title>a little game for you 💌</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -386,7 +386,7 @@
 
   <section class="card" data-stage="6">
     <div class="final-heart">💗</div>
-    <div class="final-question">will u be my Yeoja chingu?</div>
+    <div class="final-question">will u be my girlfriend?</div>
     <div class="yn-wrap" id="yn-wrap">
       <button class="yes-btn" id="yes-btn">yes 💗</button>
       <button class="no-btn" id="no-btn">no</button>
@@ -396,12 +396,13 @@
 
   <section class="card" data-stage="7">
     <div class="yay-heart">🎉💗</div>
-    <h1>yeyyy!! no turning back now haha</h1>
-    <p>you are now my girlfriend, you clicked yes yourself and i didn't force you 💌</p>
+    <h1>yeyyy!! best answer ever</h1>
+    <p>knew you'd get there eventually 😄 talk soon 💌</p>
   </section>
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 document.getElementById('gate-ok-btn').addEventListener('click', () => {
   document.getElementById('gate-overlay').style.display = 'none';
@@ -410,6 +411,28 @@ document.getElementById('gate-ok-btn').addEventListener('click', () => {
 /* ============================================================
    TIMING — how long to pause so she can actually read things
    ============================================================ */
+/* ============================================================
+   EMAIL NOTIFICATION — fill these in with your EmailJS details
+   1. Sign up free at https://www.emailjs.com/
+   2. Add an Email Service (e.g. Gmail) -> copy the SERVICE ID
+   3. Create an Email Template with variables {{answer}} and {{time}}
+      -> copy the TEMPLATE ID
+   4. Account -> General -> copy your PUBLIC KEY
+   ============================================================ */
+const EMAILJS_PUBLIC_KEY  = "vS8KAWxV83F_tCLGz";
+const EMAILJS_SERVICE_ID  = "service_kx7tzo5";
+const EMAILJS_TEMPLATE_ID = "template_5suze5m";
+
+emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+let noAnswerNotified = false;
+function notifyAnswer(answer){
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    answer: answer,
+    time: new Date().toLocaleString()
+  }).catch(err => console.error("EmailJS error:", err));
+}
+
 const ANSWER_READ_DELAY = 2600;   // pause after picking a quiz answer, before moving on
 const TYPED_LINE_PAUSE  = 1400;   // pause between each typed confession line
 const FINAL_LINE_PAUSE  = 2600;   // extra pause after the LAST line before the ask appears
@@ -418,15 +441,12 @@ const CONFESSION_LINES = [
   "so... I know we only know each other for not that long.",
   "I don't know why but its so easy to talk to you",
   "every time we talk, my day gets better.",
-  "I catch myself smiling at my phone because of you.",
-  "I don't really do that, that shi gay as hell",
+  "I catch myself smiling at my phone because of you. I don't really do that, that shi gay as hell",
   "The way you carry yourself and your personality, it makes me feel something i haven't felt for so long.",
-  "You asked me what im looking for...",
-  "im looking for someone like you.",
+  "You asked me what im looking for... im looking for someone like you.",
   "Someone that makes me feel like i can finally be myself",
-  "I like you Arina. like, actually like you.",
-  "I can't continue just being 'friends' with you.",
-  "so here it goes..."
+  "I like you Arina. like, actually like you. I can't continue just being 'friends' with you.",
+  "so I here it goes..."
 ];
 
 (function heartField(){
@@ -533,6 +553,11 @@ const nudgeMessages = [
 let dodgeCount = 0;
 
 function dodgeNo(){
+  if(!noAnswerNotified){
+    noAnswerNotified = true;
+    notifyAnswer("NO 💔");
+  }
+
   const btnRect = noBtn.getBoundingClientRect();
   const margin = 16;
   const maxX = window.innerWidth - btnRect.width - margin*2;
@@ -557,6 +582,7 @@ noBtn.addEventListener('click', (e) => { e.preventDefault(); dodgeNo(); });
 noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); dodgeNo(); }, {passive:false});
 
 yesBtn.addEventListener('click', () => {
+  notifyAnswer("YES 💗");
   goToStage(7);
   burstConfetti();
 });
